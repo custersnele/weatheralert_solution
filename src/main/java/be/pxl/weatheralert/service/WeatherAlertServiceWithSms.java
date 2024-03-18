@@ -6,18 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
-public class WeatherAlertService {
+public class WeatherAlertServiceWithSms {
 	private final List<Subscriber> subscribers = new ArrayList<>();
 
+	private final MessageService smsService;
+
+	@Autowired
+	public WeatherAlertServiceWithSms(MessageService smsService) {
+		this.smsService = smsService;
+	}
+
 	public void addSubscriber(Subscriber subscriber) {
-		if (!subscribers.contains(subscriber)) {
-			subscribers.add(subscriber);
-		}
+		subscribers.add(subscriber);
 	}
 
 	public void removeSubscriber(Subscriber subscriber) {
@@ -25,6 +28,6 @@ public class WeatherAlertService {
 	}
 
 	public void send(Alert message) {
-		subscribers.forEach(s -> s.receive(message));
+		subscribers.forEach(s -> s.receive(message, smsService));
 	}
 }

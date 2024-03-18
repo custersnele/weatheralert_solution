@@ -3,6 +3,7 @@ package be.pxl.weatheralert.api;
 import be.pxl.weatheralert.domain.impl.SmsSubscriber;
 import be.pxl.weatheralert.domain.impl.WeatherAlert;
 import be.pxl.weatheralert.service.WeatherAlertService;
+import be.pxl.weatheralert.service.WeatherAlertServiceWithSms;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("weatheralert")
 public class WeatherAlertController {
 
-    private final WeatherAlertService weatherAlertService;
+    private final WeatherAlertServiceWithSms weatherAlertService;
 
     @Autowired
-    public WeatherAlertController(WeatherAlertService weatherAlertService) {
+    public WeatherAlertController(WeatherAlertServiceWithSms weatherAlertService) {
         this.weatherAlertService = weatherAlertService;
     }
 

@@ -41,6 +41,18 @@ public class WeatherAlertControllerTest {
         verify(weatherAlertService).addSubscriber(smsSubscriber);
     }
 
+
+    @Test
+    public void subscribeTestMissing() throws Exception {
+        SmsSubscriber smsSubscriber = new SmsSubscriber("nickname", "");
+        String json = objectMapper.writeValueAsString(smsSubscriber);
+
+        mockMvc.perform(post("/weatheralert/subscribe")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
     @Test
     public void unsubscribeTest() throws Exception {
         SmsSubscriber smsSubscriber = new SmsSubscriber("nickname", "123456");
@@ -50,6 +62,7 @@ public class WeatherAlertControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isAccepted());
+        verify(weatherAlertService).removeSubscriber(smsSubscriber);
     }
 
     @Test

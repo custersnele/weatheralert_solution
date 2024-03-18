@@ -8,18 +8,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class WeatherAlertServiceTest {
 	@Mock
 	private Subscriber subscriber;
 	@Mock
-	private MessageService messageService;
-	@Mock
 	private Alert message;
+
 	@InjectMocks
 	private WeatherAlertService weatherAlertService;
 
@@ -27,7 +26,7 @@ public class WeatherAlertServiceTest {
 	public void subscribedClientShouldReceiveMessage() {
 		weatherAlertService.addSubscriber(subscriber);
 		weatherAlertService.send(message);
-		verify(subscriber).receive(message, messageService);
+		verify(subscriber).receive(message);
 	}
 
 	@Test
@@ -38,25 +37,24 @@ public class WeatherAlertServiceTest {
 		weatherAlertService.addSubscriber(subscriber1);
 		weatherAlertService.addSubscriber(subscriber2);
 		weatherAlertService.send(message);
-		verify(subscriber1).receive(message, messageService);
-		verify(subscriber2).receive(message, messageService);
+		verify(subscriber1).receive(message);
+		verify(subscriber2).receive(message);
 	}
 
 	@Test
 	public void notSubscribedClientShouldNotReceiveMessage() {
-		Subscriber subscriber1 = Mockito.mock(Subscriber.class, "subscriber1");
 
 		weatherAlertService.send(message);
-		verify(subscriber1, never()).receive(message, messageService);
+		verify(subscriber, never()).receive(message);
+		verifyNoInteractions(subscriber);
 	}
 
 	@Test
 	public void shouldSendOnlyOneMessageToMultiSubscriber() {
-		Subscriber subscriber1 = Mockito.mock(Subscriber.class, "subscriber1");
 
-		weatherAlertService.addSubscriber(subscriber1);
-		weatherAlertService.addSubscriber(subscriber1);
+		weatherAlertService.addSubscriber(subscriber);
+		weatherAlertService.addSubscriber(subscriber);
 		weatherAlertService.send(message);
-		verify(subscriber1).receive(message, messageService);
+		verify(subscriber).receive(message);
 	}
 }

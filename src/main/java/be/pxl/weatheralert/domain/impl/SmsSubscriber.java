@@ -3,12 +3,15 @@ package be.pxl.weatheralert.domain.impl;
 import be.pxl.weatheralert.domain.Alert;
 import be.pxl.weatheralert.service.MessageService;
 import be.pxl.weatheralert.domain.Subscriber;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
 public class SmsSubscriber implements Subscriber {
 
+	@NotBlank
 	private String nickname;
+	@NotBlank
 	private String phoneNumber;
 
 	public SmsSubscriber(String nickname, String phoneNumber) {
@@ -36,6 +39,12 @@ public class SmsSubscriber implements Subscriber {
 	public void receive(Alert alert, MessageService messageService) {
 		messageService.sendMessage(this, alert);
 	}
+
+	@Override
+	public void receive(Alert alert) {
+		System.out.println(nickname + " receives " + alert.getMessage());
+	}
+
 
 	@Override
 	public boolean equals(Object o) {
