@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("weatheralert")
 public class WeatherAlertController {
 
-    private final WeatherAlertServiceWithSms weatherAlertService;
+    private final WeatherAlertService weatherAlertService;
 
     @Autowired
-    public WeatherAlertController(WeatherAlertServiceWithSms weatherAlertService) {
+    public WeatherAlertController(WeatherAlertService weatherAlertService) {
         this.weatherAlertService = weatherAlertService;
     }
 
