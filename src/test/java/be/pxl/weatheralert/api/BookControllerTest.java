@@ -1,6 +1,7 @@
 package be.pxl.weatheralert.api;
 
 import be.pxl.weatheralert.domain.Book;
+import be.pxl.weatheralert.exception.DuplicateBookException;
 import be.pxl.weatheralert.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
@@ -39,13 +42,43 @@ public class BookControllerTest {
     }
 
     @Test
+    public void createBookTitleMissingTest() throws Exception {
+        Book newBook = new Book("", "F. Scott Fitzgerald");
+        //Mockito.when(bookService.saveBook(ArgumentMatchers.any(Book.class))).thenReturn(newBook);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newBook)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void createBookBookAlreadyExistsTest() throws Exception {
+        Book newBook = new Book("Titel van het boek", "F. Scott Fitzgerald");
+//        Mockito.when(bookService.saveBook(ArgumentMatchers.any(Book.class)))
+//                        .thenThrow(DuplicateBookException.class);
+        
+        Mockito.doThrow(DuplicateBookException.class)
+                .when(bookService).saveBook(ArgumentMatchers.any(Book.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newBook)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+    }
+
+    @Test
     public void getBookByIdTest() throws Exception {
         Book book = new Book("The Great Gatsby", "F. Scott Fitzgerald");
         Mockito.when(bookService.getBookById(1L)).thenReturn(book);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("The Great Gatsby"));
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("The Great Gatsby"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.author").value("F. Scott Fitzgerald"));
     }
 
     @Test

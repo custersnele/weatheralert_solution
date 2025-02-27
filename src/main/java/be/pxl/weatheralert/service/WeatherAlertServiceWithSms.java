@@ -28,6 +28,6 @@ public class WeatherAlertServiceWithSms {
 	}
 
 	public void send(Alert message) {
-		subscribers.forEach(s -> s.receive(message, smsService));
+		subscribers.forEach(s -> smsService.sendMessage(s, message));
 	}
 }

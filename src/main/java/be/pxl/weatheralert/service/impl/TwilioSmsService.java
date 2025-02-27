@@ -1,6 +1,7 @@
 package be.pxl.weatheralert.service.impl;
 
 import be.pxl.weatheralert.domain.Alert;
+import be.pxl.weatheralert.domain.Subscriber;
 import be.pxl.weatheralert.domain.impl.SmsSubscriber;
 import be.pxl.weatheralert.service.MessageService;
 import com.twilio.Twilio;
@@ -27,7 +28,7 @@ public class TwilioSmsService implements MessageService {
 		Twilio.init(accountSid, authToken);
 	}
 
-	public void sendMessage(SmsSubscriber subscriber, Alert alert) {
+	public void sendMessage(Subscriber subscriber, Alert alert) {
 		System.out.println(subscriber.getPhoneNumber());
 		System.out.println(accountSid);
 		System.out.println(authToken);

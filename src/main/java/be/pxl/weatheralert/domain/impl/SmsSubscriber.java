@@ -35,10 +35,6 @@ public class SmsSubscriber implements Subscriber {
 		return nickname;
 	}
 
-	@Override
-	public void receive(Alert alert, MessageService messageService) {
-		messageService.sendMessage(this, alert);
-	}
 
 	@Override
 	public void receive(Alert alert) {

@@ -1,11 +1,13 @@
 package be.pxl.weatheralert.domain;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class Book {
     private Long id;
+    @NotBlank
     private String title;
     private String author;
 
-    // Constructors, Getters, and Setters
     public Book() {}
 
     public Book(String title, String author) {
@@ -24,6 +26,4 @@ public class Book {
     public String getAuthor() {
         return author;
     }
-
-    // getters and setters
 }
